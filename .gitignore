@@ -216,3 +216,79 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# IDE
+#   Common IDE configuration directories and workspace files.
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.swm
+*~
+.DS_Store
+Thumbs.db
+
+# FastAPI
+#   Local ASGI server logs and reload files.
+*.log
+*.pid
+uvicorn.log
+
+# ChromaDB
+#   Default local persistence directories and SQLite databases.
+.chroma/
+chroma/
+chroma_db/
+chromadb/
+chroma.sqlite3
+*.chroma
+vectorstore/
+vectorstores/
+
+# LangChain
+#   LangChain local caches and tracing configuration.
+.langchain/
+.langchain.db
+langchain.json
+
+# AI / ML
+#   Local model weights, checkpoints, embeddings, and caches.
+models/
+checkpoints/
+embeddings/
+*.pt
+*.pth
+*.h5
+*.onnx
+*.gguf
+*.ggml
+*.safetensors
+.cache/huggingface/
+.cache/openai/
+.cache/anthropic/
+.cache/torch/
+.cache/transformers/
+
+# Secrets and credentials
+#   Never commit API keys, credentials, or environment files.
+.env
+.env.*
+!.env.example
+.env.local
+.env.development
+.env.production
+secrets.json
+secrets.yaml
+secrets.yml
+credentials.json
+service-account*.json
+*.key
+*.pem
+*.crt
+*.pfx
+.pypirc
+.netrc
+.aws/
+.gcp/
+.gcloud/
