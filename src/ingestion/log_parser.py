@@ -95,45 +95,46 @@ def filter_by_source(entries: List[LogEntry], source_pattern: str) -> List[LogEn
     return [e for e in entries if source_pattern.lower() in e.source.lower()]
  
  
-# ── Quick smoke test when run directly ──────────────────────────────────────
-if __name__ == "__main__":
-    import sys
-    test_file = "data/sample_logs/layer7_failures.log"
-    entries = parse_log_file(test_file)
- 
-    print(f"\nTotal entries: {len(entries)}")
-    errors = filter_by_severity(entries, "ERROR")
-    print(f"ERROR entries: {len(errors)}")
- 
-    layer7_entries = filter_by_source(entries, "Layer7")
-    print(f"Layer7 entries: {len(layer7_entries)}")
- 
-    print("\nFirst 3 parsed entries:")
-    for e in entries[:3]:
-        print(f"  [{e.severity}] {e.source}: {e.message[:60]}")
-
-def get_error_summary(entries):
-    '''Returns a dictionary with source names as keys and error counts as values.'''
+def get_error_summary(entries: List[LogEntry]) -> dict:
+    """Returns a dictionary with source names as keys and ERROR counts as values."""
     error_summary = {}
-    
+
     for entry in entries:
-        # Support both LogEntry objects and dict-like entries for robustness
         if hasattr(entry, "source"):
             source = entry.source
+            severity = entry.severity
         elif isinstance(entry, dict):
             source = entry.get("source")
+            severity = entry.get("severity")
         else:
             source = None
+            severity = None
 
-        if not source:
+        if not source or severity != "ERROR":
             continue
 
         error_summary[source] = error_summary.get(source, 0) + 1
 
     return error_summary
 
-error_summary = get_error_summary(entries)
 
-print("\nError Summary:")
-for source, count in error_summary.items():
-    print(f"{source}: {count}")
+# ── Quick smoke test when run directly ──────────────────────────────────────
+if __name__ == "__main__":
+    test_file = "data/sample_logs/layer7_failures.log"
+    entries = parse_log_file(test_file)
+
+    print(f"\nTotal entries: {len(entries)}")
+    errors = filter_by_severity(entries, "ERROR")
+    print(f"ERROR entries: {len(errors)}")
+
+    layer7_entries = filter_by_source(entries, "Layer7")
+    print(f"Layer7 entries: {len(layer7_entries)}")
+
+    print("\nFirst 3 parsed entries:")
+    for e in entries[:3]:
+        print(f"  [{e.severity}] {e.source}: {e.message[:60]}")
+
+    error_summary = get_error_summary(entries)
+    print("\nError Summary (ERROR severity only):")
+    for source, count in error_summary.items():
+        print(f"  {source}: {count}")
