@@ -256,7 +256,8 @@ langchain.json
 #   Local model weights, checkpoints, embeddings, and caches.
 models/
 checkpoints/
-embeddings/
+data/embeddings/
+data/chroma_db/
 *.pt
 *.pth
 *.h5
