@@ -11,25 +11,9 @@ raw failure logs, embeds them in a vector store for semantic search, and uses an
 to generate actionable root-cause summaries — reducing triage time from hours to minutes.
  
 ## Architecture
- 
-```
-Raw Logs (Layer7 / GitLab CI)
-         |
-         v
-  [Log Ingestion Service]  <-- src/ingestion/log_parser.py
-         |
-         v
-  [Embedding Service]      <-- src/embeddings/embedder.py
-  (ChromaDB Vector Store)
-         |
-         v
-  [LLM Analysis Service]   <-- src/llm/analyzer.py
-  (Claude / OpenAI API)
-         |
-         v
-  [REST API / Dashboard]   <-- src/api/main.py
-  Root Cause Summary + Fix Suggestions
-```
+
+ ![Architecture](docs/architecture/Architecture1.3.png)
+
  
 ## Tech Stack
  
@@ -46,13 +30,17 @@ Raw Logs (Layer7 / GitLab CI)
 ## Project Status
  
 - [x] Project scaffold and architecture defined
-- [ ] Log ingestion module (in progress)
-- [ ] Vector embedding pipeline
-- [ ] LLM root cause analysis
+- [x] Log ingestion module
+- [x] Vector embedding pipeline
+- [x] LLM root cause analysis
 - [ ] REST API layer
 - [ ] Docker containerization
 - [ ] Cloud deployment (AWS ECS)
  
+## Week 1 Progress
+
+Log ingestion: done. Embedding: done. LLM analysis: done. API layer: in progress (Day 6).
+
 ## Setup
  
 ```bash
@@ -61,6 +49,21 @@ cd ai-pipeline-failure-analyzer
 pip install -r requirements.txt
 cp .env.example .env  # add your API keys
 ```
+## Running the Pipeline
+
+Run each module independently to verify the pipeline stage by stage:
+
+```bash
+# Parse and inspect log entries
+python src/ingestion/log_parser.py
+
+# Embed logs into ChromaDB and test semantic search
+python src/embeddings/embedder.py
+
+# Run the full RAG pipeline: retrieve similar logs + generate root cause analysis
+python src/llm/analyzer.py
+```
+
 ## Known Issues & Development Notes
 
 While building this locally on Windows, I ran into and resolved a few environment and logic issues worth documenting:
