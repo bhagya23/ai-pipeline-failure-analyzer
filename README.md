@@ -53,7 +53,7 @@ cp .env.example .env  # add your API keys
 
 Run each module independently to verify the pipeline stage by stage:
 
-```bash
+\`\`\`bash
 # Parse and inspect log entries
 python src/ingestion/log_parser.py
 
@@ -62,7 +62,27 @@ python src/embeddings/embedder.py
 
 # Run the full RAG pipeline: retrieve similar logs + generate root cause analysis
 python src/llm/analyzer.py
-```
+\`\`\`
+
+### Testing the REST API
+
+Start the API server:
+\`\`\`bash
+python -m src.api.main
+\`\`\`
+
+The server runs on `http://localhost:8000`. View interactive API docs at `http://localhost:8000/docs`.
+
+**Note for Windows PowerShell users:** PowerShell's `Invoke-WebRequest` (aliased as `curl`) has a known encoding issue where UTF-8 characters (e.g., em-dashes in LLM-generated text) can render incorrectly in the `.Content` property, even though the actual API response is correctly UTF-8 encoded. Use this pattern to decode responses correctly:
+
+\`\`\`powershell
+$body = @{ failure_description = "SSL cert expired on Layer7 gateway, 503 errors" } | ConvertTo-Json
+$response = Invoke-WebRequest -Uri http://localhost:8000/api/v1/analyze -Method POST -Body $body -ContentType "application/json" -UseBasicParsing
+$rawBytes = $response.RawContentStream.ToArray()
+[System.Text.Encoding]::UTF8.GetString($rawBytes)
+\`\`\`
+
+Alternatively, test via the Swagger UI (`/docs`) or a real HTTP client (Postman, Insomnia), which handle UTF-8 decoding correctly by default.
 
 ## Known Issues & Development Notes
 
